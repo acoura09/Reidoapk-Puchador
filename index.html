@@ -296,8 +296,8 @@
         limiteDiario: 30,                              
         horaAbertura: 8,      // 08h
         minAbertura: 0,
-        horaFechamento: 00,   // 00h
-        minFechamento: 40     // 40min -> Total 00:40
+        horaFechamento: 1,   // 1h
+        minFechamento: 40     // 40min -> Total 1:40
     };
 
     let isRunning = false;
@@ -347,7 +347,7 @@
                 document.getElementById('lock-screen').style.display = 'none';
                 log(`Bem-vindo! Acesso ${acessos}/${CONFIG.limiteDiario} hoje.`, "info-text");
             } else {
-                status.innerText = "❌ LIMITE DE 5 ACESSOS ATINGIDO!";
+                status.innerText = "❌ LIMITE DE 6 ACESSOS ATINGIDO!";
                 status.style.color = "var(--die)";
             }
         } else {
