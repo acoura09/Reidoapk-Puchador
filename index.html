@@ -3,258 +3,209 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REI DO APK - Ultra Access</title>
+    <title>REI DO APP - Validador Ultra Multi-Plataforma</title>
     <style>
-        /* Estilos Globais e Fundo */
-        body { font-family: 'Segoe UI', sans-serif; color: #e0e0e0; margin: 0; background-color: #050505; text-align: center; overflow-x: hidden; }
-        
+        /* Fundo Animado */
         @keyframes fall {
             0% { transform: translateY(-100px) rotate(0deg); opacity: 0; }
-            10% { opacity: 0.8; }
-            90% { opacity: 0.8; }
-            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+            10% { opacity: 0.5; }
+            90% { opacity: 0.5; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
         }
 
-        .bg-animation { 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            z-index: -1; 
-            overflow: hidden; 
-            pointer-events: none;
+        .bg-animation {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            background-color: #050505;
         }
 
-        .falling-icon { 
-            position: absolute; 
+        .falling-icon {
+            position: absolute;
+            color: #d4af37;
+            font-family: sans-serif;
             font-weight: bold;
-            font-size: 24px;
-            user-select: none;
-            filter: drop-shadow(0 0 5px rgba(0,0,0,0.5));
-            animation: fall linear forwards;
+            font-size: 20px;
+            pointer-events: none;
+            animation: fall linear infinite;
         }
 
-        /* Telas */
-        .screen { display: none; padding: 20px; }
-        .active { display: block; }
-        .container { max-width: 600px; margin: 50px auto; background: rgba(15, 15, 15, 0.9); padding: 30px; border-radius: 15px; border: 2px solid #d4af37; box-shadow: 0 0 30px rgba(212, 175, 55, 0.2); backdrop-filter: blur(5px); }
+        /* Estilos Base */
+        body { font-family: 'Segoe UI', sans-serif; color: #e0e0e0; margin: 0; padding: 20px; text-align: center; }
+        .container { max-width: 1000px; margin: auto; background: rgba(22, 22, 22, 0.95); padding: 30px; border-radius: 15px; border: 2px solid #d4af37; box-shadow: 0 0 30px rgba(212, 175, 55, 0.3); position: relative; }
+        h1 { color: #d4af37; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 5px; text-shadow: 0 0 10px #d4af37; }
+        
+        .upload-section { border: 2px dashed #444; padding: 40px; border-radius: 10px; cursor: pointer; transition: 0.3s; margin-bottom: 20px; background: rgba(0,0,0,0.5); }
+        .upload-section:hover { border-color: #d4af37; background: rgba(20, 20, 20, 0.8); }
+        #fileInput { display: none; }
+        
+        .stats { display: flex; justify-content: space-around; margin: 20px 0; flex-wrap: wrap; gap: 10px; }
+        .stat-box { padding: 15px; border-radius: 8px; flex: 1; min-width: 150px; font-weight: bold; border: 1px solid rgba(255,255,255,0.1); }
+        .stat-total { background: #333; color: white; }
+        .stat-valid { background: #1b4332; color: #74c69d; border-color: #2ecc71; }
+        .stat-invalid { background: #5a181b; color: #ff8787; border-color: #e74c3c; }
 
-        h1 { color: #d4af37; text-transform: uppercase; letter-spacing: 2px; text-shadow: 2px 2px 4px #000; }
-        input { padding: 12px; width: 80%; border-radius: 5px; border: 1px solid #444; background: #111; color: #fff; margin: 10px 0; text-align: center; font-size: 18px; }
-        .btn { background: #d4af37; color: black; border: none; padding: 12px 25px; font-weight: bold; border-radius: 5px; cursor: pointer; transition: 0.3s; text-transform: uppercase; box-shadow: 0 4px 0 #9c7e28; }
-        .btn:hover:not(:disabled) { background: #fff; transform: translateY(-2px); box-shadow: 0 6px 0 #bbb; }
-        .btn:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 0 0; }
-        .btn:disabled { background: #444; color: #888; cursor: not-allowed; box-shadow: none; }
+        .action-buttons { margin-bottom: 20px; }
+        .btn { background: #d4af37; color: black; border: none; padding: 12px 25px; font-weight: bold; border-radius: 5px; cursor: pointer; transition: 0.3s; margin: 5px; text-transform: uppercase; }
+        .btn:hover { background: #fff; transform: scale(1.05); box-shadow: 0 0 15px #fff; }
 
-        /* Roleta */
-        #wheel-container { margin: 20px auto; width: 200px; height: 200px; border: 5px solid #d4af37; border-radius: 50%; position: relative; transition: transform 3s cubic-bezier(0.1, 0, 0.1, 1); background: conic-gradient(#d4af37 0deg 90deg, #111 90deg 180deg, #d4af37 180deg 270deg, #111 270deg 360deg); box-shadow: 0 0 20px rgba(212,175,55,0.4); }
-        .wheel-pointer { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid #ff0000; z-index: 10; }
+        .results-container { text-align: left; background: #000; border-radius: 8px; height: 450px; overflow-y: auto; padding: 15px; font-family: monospace; border: 1px solid #333; }
+        .cookie-item { padding: 15px; border-bottom: 1px solid #222; cursor: pointer; transition: 0.2s; border-left: 5px solid transparent; margin-bottom: 5px; border-radius: 4px; }
+        .cookie-item:hover { background: #1a1a1a; }
+        .status-badge { float: right; padding: 4px 10px; border-radius: 4px; font-size: 10px; font-weight: bold; }
+        
+        .valid { border-left-color: #2ecc71; background: rgba(46, 204, 113, 0.08); }
+        .valid .status-badge { background: #2ecc71; color: #000; }
+        .invalid { border-left-color: #e74c3c; opacity: 0.6; }
+        .invalid .status-badge { background: #e74c3c; color: #fff; }
 
-        /* App */
-        .app-container { max-width: 900px; }
-        .stats { display: flex; gap: 10px; margin: 20px 0; }
-        .stat-box { flex: 1; padding: 15px; background: rgba(30, 30, 30, 0.8); border: 1px solid #333; border-radius: 8px; font-weight: bold; }
-        .results-container { text-align: left; background: #000; height: 350px; overflow-y: auto; padding: 15px; border: 1px solid #333; border-radius: 8px; font-family: 'Consolas', monospace; }
-        .cookie-item { padding: 12px; border-bottom: 1px solid #222; margin-bottom: 5px; border-radius: 4px; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
-        .valid { border-left: 5px solid #2ecc71; background: rgba(46, 204, 113, 0.1); }
-        .invalid { border-left: 5px solid #e74c3c; opacity: 0.6; }
-        .platform-link { display: inline-block; background: #E50914; color: #fff; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-weight: bold; margin-top: 8px; font-size: 11px; text-transform: uppercase; }
+        .platform-link { display: inline-block; background: #d4af37; color: #000; padding: 3px 8px; border-radius: 3px; font-size: 11px; text-decoration: none; font-weight: bold; margin-right: 5px; margin-top: 8px; transition: 0.2s; }
+        .platform-link:hover { background: #fff; }
+        .no-tv { font-size: 10px; color: #888; font-style: italic; display: block; margin-top: 5px; }
     </style>
 </head>
 <body>
 
 <div class="bg-animation" id="bgAnim"></div>
 
-<!-- TELA 1: LOGIN -->
-<div id="loginScreen" class="screen active">
-    <div class="container">
-        <h1>👑 REI DO APK 👑</h1>
-        <p>Acesso Restrito - Insira sua Senha</p>
-        <input type="password" id="passInput" maxlength="4" placeholder="****">
-        <br>
-        <button class="btn" onclick="checkLogin()">ENTRAR NO PAINEL</button>
-        
-        <hr style="border: 0.100px solid #333; margin: 30px 0;">
-        
-        <h3>🎁 SORTEIO DIÁRIO 🎁</h3>
-        <p style="font-size: 13px; color: #bbb;">Ganhe acesso grátis! 1 tentativa a cada 24h por número.</p>
-        <input type="tel" id="whatsappInput" placeholder="Seu WhatsApp com DDD">
-        <br>
-        <div id="wheel-container"><div class="wheel-pointer"></div></div>
-        <button class="btn" id="spinBtn" onclick="spinWheel()">GIRAR ROLETA</button>
-        <p id="roletaMsg" style="font-weight: bold; margin-top: 15px;"></p>
+<div class="container">
+    <h1>👑 REI DO APP 👑</h1>
+    <p style="color: #888; font-weight: bold;">VARREDOR DE COMBOS MULTI-PLATAFORMA V2.0</p>
+
+    <div class="upload-section" onclick="document.getElementById('fileInput').click()">
+        <p id="uploadText">📁 SOLTE SEUS TXTs OU CLIQUE PARA IMPORTAR</p>
+        <input type="file" id="fileInput" multiple accept=".txt">
     </div>
-</div>
 
-<!-- TELA 2: APP PRINCIPAL -->
-<div id="appScreen" class="screen">
-    <div class="container app-container">
-        <h1>💎 PAINEL PREMIUM 💎</h1>
-        <p style="color: #d4af37;">Seu validador está pronto!</p>
-        
-        <div style="border: 2px dashed #d4af37; padding: 40px; cursor: pointer; background: rgba(212,175,55,0.05); border-radius: 10px;" onclick="document.getElementById('fileInput').click()">
-            <p id="uploadText" style="font-size: 18px;">📂 ARRASTE OU CLIQUE PARA CARREGAR .TXT</p>
-            <input type="file" id="fileInput" multiple accept=".txt" style="display: none;">
-        </div>
+    <div class="stats">
+        <div class="stat-box stat-total">CARREGADOS: <span id="countTotal">0</span></div>
+        <div class="stat-box stat-valid">VÁLIDOS: <span id="countValid">0</span></div>
+        <div class="stat-box stat-invalid">RUINS: <span id="countInvalid">0</span></div>
+    </div>
 
-        <div class="stats">
-            <div class="stat-box">TOTAL: <span id="countTotal">0</span></div>
-            <div class="stat-box" style="color: #2ecc71;">VÁLIDOS: <span id="countValid">0</span></div>
-            <div class="stat-box" style="color: #e74c3c;">RUINS: <span id="countInvalid">0</span></div>
-        </div>
-
+    <div class="action-buttons">
         <button class="btn" onclick="copyValidCookies()">📋 COPIAR TODOS OS VÁLIDOS</button>
-        <div class="results-container" id="results"></div>
-        <br>
-        <button class="btn" style="background: #e74c3c; color: white; box-shadow: 0 4px 0 #8e1c10;" onclick="location.reload()">DESLOGAR</button>
+    </div>
+
+    <div class="results-container" id="results">
+        <p style="color: #666; text-align: center; margin-top: 180px;">Aguardando arquivos para processamento...</p>
     </div>
 </div>
 
 <script>
-    // --- CONFIGURAÇÕES DA ANIMAÇÃO DE FUNDO ---
-    const ICONES = [
-        { txt: 'NETFLIX', color: '#E50914' },
-        { txt: '🍪', color: '#f39c12' },
-        { txt: 'PRIME', color: '#00A8E1' },
-        { txt: 'HBO', color: '#9b59b6' },
-        { txt: 'DISNEY+', color: '#1dd1a1' },
-        { txt: '👑', color: '#d4af37' },
-        { txt: 'APK', color: '#27ae60' },
-        { txt: 'TV', color: '#3498db' }
-    ];
-
-    function createFallingIcon() {
-        const bg = document.getElementById('bgAnim');
-        const iconData = ICONES[Math.floor(Math.random() * ICONES.length)];
-        const el = document.createElement('div');
-        
-        el.className = 'falling-icon';
-        el.innerText = iconData.txt;
-        el.style.color = iconData.color;
-        el.style.left = Math.random() * 100 + "vw";
-        
-        // Tamanhos e velocidades variadas para realismo
-        const size = Math.random() * (24 - 12) + 12;
-        el.style.fontSize = size + "px";
-        
-        const duration = Math.random() * (6 - 3) + 3;
-        el.style.animationDuration = duration + "s";
-        
-        bg.appendChild(el);
-        
-        // Remove o elemento após a animação
-        setTimeout(() => el.remove(), duration * 1000);
-    }
-
-    // Gerar ícones continuamente
-    setInterval(createFallingIcon, 300);
-
-    // --- LÓGICA DO SISTEMA ---
-    const SENHAS_MESTRE = ["1234", "5555", "9999", "0000", "7777"];
-    const BLOQUEIO_24H = 24 * 60 * 60 * 1000;
-
-    function loadDB() { return JSON.parse(localStorage.getItem('rei_apk_v4')) || { senhas: {}, numeros: {} }; }
-    function saveDB(db) { localStorage.setItem('rei_apk_v4', JSON.stringify(db)); }
-
-    function checkLogin() {
-        const pass = document.getElementById('passInput').value;
-        const db = loadDB();
-        const agora = Date.now();
-
-        if (!SENHAS_MESTRE.includes(pass)) { alert("Acesso negado! Senha incorreta."); return; }
-
-        let info = db.senhas[pass] || { usos: 0, lastReset: agora };
-        if (agora - info.lastReset > BLOQUEIO_24H) { info.usos = 0; info.lastReset = agora; }
-
-        if (info.usos >= 5) { alert("Limite diário desta senha atingido!"); return; }
-
-        info.usos++;
-        db.senhas[pass] = info;
-        saveDB(db);
-
-        document.getElementById('loginScreen').classList.remove('active');
-        document.getElementById('appScreen').classList.add('active');
-    }
-
-    function spinWheel() {
-        const num = document.getElementById('whatsappInput').value.replace(/\D/g,'');
-        const db = loadDB();
-        const agora = Date.now();
-
-        if (num.length < 10) { alert("Informe um número válido."); return; }
-
-        if (db.numeros[num] && (agora - db.numeros[num] < BLOQUEIO_24H)) {
-            document.getElementById('roletaMsg').style.color = "#ff8787";
-            document.getElementById('roletaMsg').innerText = "❌ Tente novamente amanhã!";
-            return;
-        }
-
-        const wheel = document.getElementById('wheel-container');
-        const btn = document.getElementById('spinBtn');
-        btn.disabled = true;
-        
-        const giro = Math.floor(Math.random() * 360) + 1440;
-        wheel.style.transform = `rotate(${giro}deg)`;
-
-        db.numeros[num] = agora;
-        saveDB(db);
-
-        setTimeout(() => {
-            const ganhou = Math.random() > 0.8;
-            if (ganhou) {
-                const senha = SENHAS_MESTRE[Math.floor(Math.random() * SENHAS_MESTRE.length)];
-                document.getElementById('roletaMsg').style.color = "#2ecc71";
-                document.getElementById('roletaMsg').innerText = `🎁 PARABÉNS! SENHA: ${senha}`;
-            } else {
-                document.getElementById('roletaMsg').style.color = "#ff8787";
-                document.getElementById('roletaMsg').innerText = "😢 Não foi dessa vez. Volte em 24h!";
-            }
-            btn.disabled = false;
-        }, 3000);
-    }
-
-    // --- VALIDADOR ---
     const fileInput = document.getElementById('fileInput');
     const resultsDiv = document.getElementById('results');
     let validList = [];
+    let validCount = 0, invalidCount = 0, totalCount = 0;
+
+    // Fundo Animado com Ícones das Plataformas
+    const icons = ['Netflix', 'HBO', 'AppleTV', 'Globo', 'Crunchy', 'Canva', '👑', 'Cookie', 'Premium'];
+    function createFallingIcon() {
+        const icon = document.createElement('div');
+        icon.className = 'falling-icon';
+        icon.innerText = icons[Math.floor(Math.random() * icons.length)];
+        icon.style.left = Math.random() * 100 + "vw";
+        icon.style.animationDuration = (Math.random() * 3 + 4) + "s";
+        icon.style.fontSize = (Math.random() * 12 + 10) + "px";
+        document.getElementById('bgAnim').appendChild(icon);
+        setTimeout(() => icon.remove(), 7000);
+    }
+    setInterval(createFallingIcon, 400);
 
     fileInput.addEventListener('change', function(e) {
         const files = e.target.files;
+        if (files.length === 0) return;
         resultsDiv.innerHTML = "";
         validList = [];
-        let v = 0, i = 0;
+        validCount = 0; invalidCount = 0; totalCount = 0;
+        
+        document.getElementById('uploadText').innerText = "Processando " + files.length + " arquivos...";
 
         Array.from(files).forEach(file => {
             const reader = new FileReader();
-            reader.onload = (ev) => {
-                const content = ev.target.result;
-                const isValid = content.length > 50 && (content.includes("netflix") || content.includes("=") || content.includes(":"));
-                const div = document.createElement('div');
-                div.className = `cookie-item ${isValid ? 'valid' : 'invalid'}`;
-                
-                if(isValid) {
-                    v++;
-                    validList.push(content);
-                    div.innerHTML = `<strong>✅ ${file.name}</strong><br><a href="https://www.netflix.com/tv2" target="_blank" class="platform-link">🔗 ATIVAR NA TV</a>`;
-                } else {
-                    i++;
-                    div.innerHTML = `<strong>❌ ${file.name}</strong> - Inválido`;
-                }
-                resultsDiv.appendChild(div);
-                document.getElementById('countTotal').innerText = files.length;
-                document.getElementById('countValid').innerText = v;
-                document.getElementById('countInvalid').innerText = i;
-            };
+            reader.onload = (ev) => processContent(ev.target.result, file.name);
             reader.readAsText(file);
         });
     });
 
+    function processContent(content, fileName) {
+        totalCount++;
+        const lowContent = content.toLowerCase();
+        
+        // Critério de Validação: Formato Netscape (contém tabs) ou Formato JSON de cookies
+        const isNetscape = content.includes('\t') && (content.includes('TRUE') || content.includes('FALSE'));
+        const hasKeyValues = content.includes('=') && content.length > 40;
+        
+        const isValid = isNetscape || hasKeyValues;
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'cookie-item';
+
+        if (isValid) {
+            validCount++;
+            validList.push(content);
+            itemDiv.classList.add('valid');
+            
+            let links = '';
+            let tvNote = '';
+
+            // Lógica de Detecção de Plataforma
+            if (lowContent.includes("netflix")) {
+                links += `<a href="https://www.netflix.com/tv2" target="_blank" class="platform-link">Ativar Netflix</a>`;
+            }
+            if (lowContent.includes("hbomax") || lowContent.includes("hbo")) {
+                links += `<a href="https://auth.hbomax.com/link" target="_blank" class="platform-link">Ativar HBO</a>`;
+            }
+            if (lowContent.includes("apple")) {
+                links += `<a href="https://activate.apple.com/" target="_blank" class="platform-link">Ativar Apple TV</a>`;
+            }
+            if (lowContent.includes("globo")) {
+                links += `<a href="https://ativar.globo.com/" target="_blank" class="platform-link">Ativar Globoplay</a>`;
+            }
+            if (lowContent.includes("crunchyroll")) {
+                links += `<a href="https://www.crunchyroll.com/activate" target="_blank" class="platform-link">Ativar Crunchyroll</a>`;
+            }
+            if (lowContent.includes("canva")) {
+                links += `<span class="platform-link" style="background:#555; color:#fff;">Canva Login</span>`;
+                tvNote = `<span class="no-tv">⚠️ Não possui ativação para TV via código.</span>`;
+            }
+
+            // Se não identificou marca específica, mas é um cookie válido
+            if (links === '') links = `<span class="platform-link">Cookie Desconhecido</span>`;
+
+            itemDiv.innerHTML = `
+                <span class="status-badge">VÁLIDO / PRONTO</span>
+                <strong>📄 ${fileName}</strong><br>
+                ${links}
+                ${tvNote}
+            `;
+            
+            // Copiar ao clicar no item
+            itemDiv.onclick = () => { 
+                navigator.clipboard.writeText(content); 
+                alert("Conteúdo de " + fileName + " copiado!"); 
+            };
+        } else {
+            invalidCount++;
+            itemDiv.classList.add('invalid');
+            itemDiv.innerHTML = `<span class="status-badge">ERRO</span><strong>❌ ${fileName}</strong><br>Formato inválido ou arquivo vazio.`;
+        }
+
+        resultsDiv.appendChild(itemDiv);
+        updateStats();
+    }
+
+    function updateStats() {
+        document.getElementById('countTotal').innerText = totalCount;
+        document.getElementById('countValid').innerText = validCount;
+        document.getElementById('countInvalid').innerText = invalidCount;
+    }
+
     function copyValidCookies() {
-        if (!validList.length) return;
-        navigator.clipboard.writeText(validList.join("\n\n---\n\n"));
-        alert("Copiado!");
+        if (validList.length === 0) return alert("Nenhum cookie válido encontrado!");
+        const blob = validList.join("\n\n--- PRÓXIMO COMBO ---\n\n");
+        navigator.clipboard.writeText(blob);
+        alert("Sucesso! " + validCount + " combos copiados para sua área de transferência.");
     }
 </script>
 
